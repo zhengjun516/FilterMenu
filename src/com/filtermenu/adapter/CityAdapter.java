@@ -4,11 +4,14 @@ import java.util.List;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.filtermenu.R;
 import com.filtermenu.model.City;
+import com.filtermenu.model.District;
 import com.filtermenu.model.JobType;
 
 public class CityAdapter extends MBaseAdapter<City> {
@@ -18,14 +21,23 @@ public class CityAdapter extends MBaseAdapter<City> {
 		  initParams(normalBg, pressBg);
 	}
 	
+	
+	
+	
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public List<District> getChildren(int position) {
+		return datas.get(position).districts;
+	}
+
+	@Override
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		City city = (City) getItem(position);
-	        View view;
+	        final View view;
 	        ViewHolder holder;
 	        if(convertView == null) {
 	            view = mInflater.inflate(R.layout.filter_menu_listview_item,null);
 	            holder = new ViewHolder();
+	            holder.mFilterMenuListItem = (LinearLayout) view.findViewById(R.id.mFilterMenuListItem);
 	            holder.tv = (TextView) view.findViewById(R.id.tv);
 	            view.setTag(holder);
 	        } else {
@@ -38,11 +50,21 @@ public class CityAdapter extends MBaseAdapter<City> {
 	        } else {
 	            holder.tv.setBackgroundResource(normalBg);
 	        }
+	        
+	        holder.mFilterMenuListItem.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mOnItemClickListenerAdapterView.onItemClick(view, position, (City) getItem(position));
+				}
+			});
+	        
+	        
 	        return view;
 	}
 
 	class ViewHolder{
         TextView tv;
+        LinearLayout mFilterMenuListItem;
     }
 
 	@Override

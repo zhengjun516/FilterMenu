@@ -55,6 +55,10 @@ public abstract class MBaseAdapter<？> extends BaseAdapter{
 		return datas;
 	}
 	
+	public List<?> getChildren(int position){
+		return datas;
+	};
+	
 	protected void initParams(int normalBg, int pressBg){
         this.normalBg = normalBg;
         this.pressBg = pressBg;

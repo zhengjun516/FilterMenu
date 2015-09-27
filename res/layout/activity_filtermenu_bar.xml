@@ -6,13 +6,13 @@
     android:orientation="horizontal"
     tools:context=".MainActivity" >
 
-    <com.filtermenu.view.FilterMenuBar
-        android:id="@+id/mFilterMenuBar"
+    <com.filtermenu.view.FilterMenuBar2
+        android:id="@+id/mFilterMenuBar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         >
-    </com.filtermenu.view.FilterMenuBar>
+    </com.filtermenu.view.FilterMenuBar2>
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.filtermenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.filtermenu.view.FilterMenuList;
 import com.filtermenu.view.FilterMenuListAdapter;
 import com.filtermenu.view.FilterMenuTwoList;
 import com.filtermenu.view.OnFilterMenuItemClickListener;
+import com.filtermenu.view.OnFilterMenusSelectedListener;
 
 public class FilterMenuBarMainActivity extends Activity {
 
@@ -60,6 +62,14 @@ public class FilterMenuBarMainActivity extends Activity {
 		baseAdapters.add(filterMenuListAdapter4);
 		
 		mFilterMenuBar.setFilterMenus(baseAdapters);
+		
+		mFilterMenuBar.setOnFilterMenusSelectedListener(new OnFilterMenusSelectedListener() {
+			
+			@Override
+			public void onFilterMenuSelect(Map<Integer, Object> filterMenuSelectedValues) {
+				//此处是所有列已经筛选的值。
+			}
+		});
 		
 	}
 

@@ -12,6 +12,6 @@ Android 下拉筛选菜单
 支持自定义界面选择
 
 
-![image](https://github.com/zhengjun516/FilterMenu/img/device1.png)
-![image](https://github.com/zhengjun516/FilterMenu/img/device2.png)
-![image](https://github.com/zhengjun516/FilterMenu/img/device3.png)
+![image](https://github.com/zhengjun516/FilterMenu/blob/master/img/device1.png)
+![image](https://github.com/zhengjun516/FilterMenu/blob/master/img/device2.png)
+![image](https://github.com/zhengjun516/FilterMenu/blob/master/img/device3.png)

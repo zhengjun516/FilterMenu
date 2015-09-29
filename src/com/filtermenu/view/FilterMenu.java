@@ -106,16 +106,16 @@ public class FilterMenu extends Button implements PopupWindow.OnDismissListener 
      * 设置popupwindow的view
      * @param view
      */
-    public void setPopupView(final View view) {
+   /* public void setPopupView(final View view) {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPopUpWindow(view);
             }
         });
-    }
+    }*/
 
-    public void showPopUpWindow(final View view) {
+    /*public void showPopUpWindow(final View view) {
 		if(popupWindow == null) {
             LinearLayout layout = new LinearLayout(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (screenHeight * 0.6));
@@ -139,7 +139,7 @@ public class FilterMenu extends Button implements PopupWindow.OnDismissListener 
         }
         setPress();
         popupWindow.showAsDropDown(this);
-	}
+	}*/
     
     /**
      * 设置选中时候的按钮状态

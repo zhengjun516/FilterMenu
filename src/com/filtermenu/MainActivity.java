@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 				mFilterMenu.hidePopup();
 			}
 		});
-		mFilterMenu.setPopupView(menuList);
+		//mFilterMenu.setPopupView(menuList);
 
 		mFilterMenu2 = (FilterMenu) findViewById(R.id.btn2);
 		final FilterMenuTwoList filterMenuMultiList = new FilterMenuTwoList(
@@ -84,13 +84,13 @@ public class MainActivity extends Activity {
 						mFilterMenu2.hidePopup();
 					}
 				});
-		mFilterMenu2.setPopupView(filterMenuMultiList);
+	//	mFilterMenu2.setPopupView(filterMenuMultiList);
 		
 		mFilterMenu3 = (FilterMenu) findViewById(R.id.mFilterMenu3);
 		MultiChoiceAdapter multiChoiceAdapter = new MultiChoiceAdapter(this, DataManager.getCities());
 		FilterMenuList filterMenuList = new FilterMenuList(this);
 		filterMenuList.setAdapter(multiChoiceAdapter);
-		mFilterMenu3.setPopupView(filterMenuList);
+		//mFilterMenu3.setPopupView(filterMenuList);
 	}
 
 }

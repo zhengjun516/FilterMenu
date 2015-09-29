@@ -73,6 +73,6 @@ public class MultiChoiceAdapter extends MBaseAdapter<City>{
 
 	@Override
 	public String getText(int position) {
-		return "";
+		return "筛选";
 	}
 }

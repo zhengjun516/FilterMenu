@@ -38,6 +38,9 @@ public class FilterMenuBar2 extends LinearLayout implements OnDismissListener{
 	
 	private PopupWindow popupWindow;
 	
+	private OnFilterMenusSelectedListener mOnFilterMenusSelectedListener;
+	private Map<Integer,Object> mapSelectedFilterParams = new HashMap<Integer, Object>();
+	
 	public FilterMenuBar2(Context context) {
 		super(context);
 		mContext = context;
@@ -57,11 +60,57 @@ public class FilterMenuBar2 extends LinearLayout implements OnDismissListener{
 	}
 	
 	public void setFilterMenus(List<FilterMenuListAdapter> baseAdapters){
-		mMBaseAdapters.clear();
 		if(baseAdapters != null){
 			int count = baseAdapters.size();
+			
+			mFilterMenus.clear();
+			for(int i=0;i<count;i++){
+				FilterMenu filterMenu = new FilterMenu(mContext);
+				filterMenu.setTag(i);
+				filterMenu.setBackgroundDrawable(null);
+				filterMenu.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1));
+				
+				filterMenu.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						FilterMenu menu = (FilterMenu) view;
+						selectPosition = (Integer) menu.getTag();
+						View content = mContentViews.get(selectPosition);
+						show(content,view);
+						selectFilterMenu = view;
+					}
+				});
+				
+				mFilterMenus.put(i, filterMenu);
+				addView(filterMenu, i);
+			}
+			
+			mMBaseAdapters.clear();
+			for(int i=0;i<count;i++){
+				FilterMenuListAdapter adapter = baseAdapters.get(i);
+				mMBaseAdapters.put(i,adapter);
+			}
+			
+			mContentViews.clear();
+			for(int i=0;i<count;i++){
+				FilterMenuListAdapter filterMenuListAdapter = mMBaseAdapters.get(i);
+				if(filterMenuListAdapter.filterMenuType == FilterMenuListAdapter.SINGLE_COLUMN){
+					FilterMenuList filterMenuList = new FilterMenuList(mContext);
+					filterMenuList.setTag(i);
+					filterMenuList.setAdapter(filterMenuListAdapter.parentAdapter);
+					mContentViews.put(i, filterMenuList);
+				}else{
+					FilterMenuTwoList filterMenuTwoList = new FilterMenuTwoList(mContext);
+					filterMenuTwoList.setTag(i);
+					filterMenuTwoList.setParentAdapter(filterMenuListAdapter.parentAdapter);
+					filterMenuTwoList.setChildrenAdapter(filterMenuListAdapter.childrenAdapter);
+					mContentViews.put(i, filterMenuTwoList);
+				}
+				
+			}
+			
 			for(int i=0;i < count;i++){
-				final FilterMenuListAdapter adapter = baseAdapters.get(i);
+				final FilterMenuListAdapter adapter = mMBaseAdapters.get(i);
 				if(adapter.filterMenuType == FilterMenuListAdapter.SINGLE_COLUMN){
 					adapter.parentAdapter.setTag(i);
 					adapter.parentAdapter.setOnItemClickListenerAdapterView(new OnItemClickListenerAdapterView() {
@@ -73,10 +122,21 @@ public class FilterMenuBar2 extends LinearLayout implements OnDismissListener{
 							adapter2.parentAdapter.notifyDataSetChanged();
 							FilterMenu filterMenu = mFilterMenus.get(tag);
 							filterMenu.setText(adapter2.parentAdapter.getText(position));
+							
+							mapSelectedFilterParams.put(tag, adapter2.parentAdapter.getItem(position));
+							if(mOnFilterMenusSelectedListener != null){
+								mOnFilterMenusSelectedListener.onFilterMenuSelect(mapSelectedFilterParams);
+							}
 							hidePopup();
 						}
 					});
-					mMBaseAdapters.put(i,adapter);
+					
+					mapSelectedFilterParams.put(i, adapter.parentAdapter.getItem(0));
+					//mMBaseAdapters.put(i,adapter);
+					
+					FilterMenu filterMenu = mFilterMenus.get(i);
+					filterMenu.setText(adapter.parentAdapter.getText(0));
+					
 				}else{
 					adapter.parentAdapter.setTag(i);
 					adapter.childrenAdapter.setTag(i);
@@ -103,55 +163,32 @@ public class FilterMenuBar2 extends LinearLayout implements OnDismissListener{
 							adapter2.childrenAdapter.notifyDataSetChanged();
 							FilterMenu filterMenu = mFilterMenus.get(tag);
 							filterMenu.setText(adapter2.childrenAdapter.getText(position));
+							mapSelectedFilterParams.put(tag, adapter2.childrenAdapter.getItem(position));
+							if(mOnFilterMenusSelectedListener != null){
+								mOnFilterMenusSelectedListener.onFilterMenuSelect(mapSelectedFilterParams);
+							}
 							hidePopup();
 						}
 					});
-					mMBaseAdapters.put(i,adapter);
+					
+					FilterMenu filterMenu = mFilterMenus.get(i);
+					if(adapter.childrenAdapter.getCount()>0){
+						mapSelectedFilterParams.put(i, adapter.childrenAdapter.getItem(0));
+						filterMenu.setText(adapter.childrenAdapter.getText(0));
+					}else{
+						mapSelectedFilterParams.put(i, null);
+						filterMenu.setText(adapter.parentAdapter.getText(0));
+					}
 				}
 			}
-		}
-		int count = mMBaseAdapters.size();
-		
-		mContentViews.clear();
-		for(int i=0;i<count;i++){
-			FilterMenuListAdapter filterMenuListAdapter = mMBaseAdapters.get(i);
-			if(filterMenuListAdapter.filterMenuType == FilterMenuListAdapter.SINGLE_COLUMN){
-				FilterMenuList filterMenuList = new FilterMenuList(mContext);
-				filterMenuList.setTag(i);
-				filterMenuList.setAdapter(filterMenuListAdapter.parentAdapter);
-				mContentViews.put(i, filterMenuList);
-			}else{
-				FilterMenuTwoList filterMenuTwoList = new FilterMenuTwoList(mContext);
-				filterMenuTwoList.setTag(i);
-				filterMenuTwoList.setParentAdapter(filterMenuListAdapter.parentAdapter);
-				filterMenuTwoList.setChildrenAdapter(filterMenuListAdapter.childrenAdapter);
-				mContentViews.put(i, filterMenuTwoList);
-			}
-			
-		}
-		
-		mFilterMenus.clear();
-		for(int i=0;i<count;i++){
-			FilterMenu filterMenu = new FilterMenu(mContext);
-			filterMenu.setTag(i);
-			
-			filterMenu.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					FilterMenu menu = (FilterMenu) view;
-					selectPosition = (Integer) menu.getTag();
-					View content = mContentViews.get(selectPosition);
-					show(content,view);
-					selectFilterMenu = view;
-				}
-			});
-			
-			mFilterMenus.put(i, filterMenu);
-			addView(filterMenu, i);
 		}
 		initPopUpWindow();
 	}
 
+	public void setOnFilterMenusSelectedListener(OnFilterMenusSelectedListener onFilterMenusSelectedListener){
+		mOnFilterMenusSelectedListener = onFilterMenusSelectedListener;
+	}
+	
 	public void initPopUpWindow() {
 		if (popupWindow == null) {
 			popupWindow = new PopupWindow(mContentViews.get(selectPosition), displayWidth, displayHeight/2);
